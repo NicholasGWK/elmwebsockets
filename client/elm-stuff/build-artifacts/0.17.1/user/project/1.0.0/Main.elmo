@@ -1,0 +1,154 @@
+var _user$project$Main$piece = function (x) {
+	return A3(
+		_elm_lang$svg$Svg$node,
+		'rect',
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$width('10'),
+				_elm_lang$svg$Svg_Attributes$height('10'),
+				_elm_lang$svg$Svg_Attributes$color('black'),
+				_elm_lang$svg$Svg_Attributes$x(
+				_elm_lang$core$Basics$toString(x))
+			]),
+		_elm_lang$core$Native_List.fromArray(
+			[]));
+};
+var _user$project$Main$board = function (children) {
+	return A3(
+		_elm_lang$svg$Svg$node,
+		'svg',
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_elm_lang$svg$Svg_Attributes$width('100'),
+				_elm_lang$svg$Svg_Attributes$height('100'),
+				_elm_lang$svg$Svg_Attributes$color('black')
+			]),
+		children);
+};
+var _user$project$Main$just10 = function (arg) {
+	return 10;
+};
+var _user$project$Main$logError = function (err) {
+	return A2(_elm_lang$core$Debug$log, 'Err', err);
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p0 = msg;
+		if (_p0.ctor === 'Send') {
+			var _p1 = _p0._0.rxType;
+			if (_p1.ctor === 'MoveLeft') {
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_elm_lang$websocket$WebSocket$send,
+						'ws://localhost:8080',
+						A2(
+							_elm_lang$core$Json_Encode$encode,
+							0,
+							_elm_lang$core$Json_Encode$object(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{
+										ctor: '_Tuple2',
+										_0: 'type',
+										_1: _elm_lang$core$Json_Encode$string('moveLeft')
+									}
+									]))))
+				};
+			} else {
+				return {
+					ctor: '_Tuple2',
+					_0: model,
+					_1: A2(
+						_elm_lang$websocket$WebSocket$send,
+						'ws://localhost:8080',
+						A2(
+							_elm_lang$core$Json_Encode$encode,
+							0,
+							_elm_lang$core$Json_Encode$object(
+								_elm_lang$core$Native_List.fromArray(
+									[
+										{
+										ctor: '_Tuple2',
+										_0: 'type',
+										_1: _elm_lang$core$Json_Encode$string('moveRight')
+									}
+									]))))
+				};
+			}
+		} else {
+			return {ctor: '_Tuple2', _0: _p0._0, _1: _elm_lang$core$Platform_Cmd$none};
+		}
+	});
+var _user$project$Main$moveRight = 'moveRight';
+var _user$project$Main$moveLeft = 'moveLeft';
+var _user$project$Main$init = {ctor: '_Tuple2', _0: 0, _1: _elm_lang$core$Platform_Cmd$none};
+var _user$project$Main$ReduxAction = function (a) {
+	return {rxType: a};
+};
+var _user$project$Main$MoveRight = {ctor: 'MoveRight'};
+var _user$project$Main$MoveLeft = {ctor: 'MoveLeft'};
+var _user$project$Main$NewMessage = function (a) {
+	return {ctor: 'NewMessage', _0: a};
+};
+var _user$project$Main$reduxToElm = function (str) {
+	var valid = A2(
+		_elm_lang$core$Json_Decode$decodeString,
+		A2(_elm_lang$core$Json_Decode_ops[':='], 'position', _elm_lang$core$Json_Decode$int),
+		str);
+	var _p2 = valid;
+	if (_p2.ctor === 'Ok') {
+		return _user$project$Main$NewMessage(_p2._0);
+	} else {
+		return _user$project$Main$NewMessage(10);
+	}
+};
+var _user$project$Main$subscriptions = function (model) {
+	return A2(_elm_lang$websocket$WebSocket$listen, 'ws://localhost:8080', _user$project$Main$reduxToElm);
+};
+var _user$project$Main$Send = function (a) {
+	return {ctor: 'Send', _0: a};
+};
+var _user$project$Main$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		_elm_lang$core$Native_List.fromArray(
+			[]),
+		_elm_lang$core$Native_List.fromArray(
+			[
+				_user$project$Main$board(
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_user$project$Main$piece(model)
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Main$Send(
+							_user$project$Main$ReduxAction(_user$project$Main$MoveLeft)))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Left')
+					])),
+				A2(
+				_elm_lang$html$Html$button,
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html_Events$onClick(
+						_user$project$Main$Send(
+							_user$project$Main$ReduxAction(_user$project$Main$MoveRight)))
+					]),
+				_elm_lang$core$Native_List.fromArray(
+					[
+						_elm_lang$html$Html$text('Right')
+					]))
+			]));
+};
+var _user$project$Main$main = {
+	main: _elm_lang$html$Html_App$program(
+		{init: _user$project$Main$init, view: _user$project$Main$view, update: _user$project$Main$update, subscriptions: _user$project$Main$subscriptions})
+};
